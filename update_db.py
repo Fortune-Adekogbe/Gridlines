@@ -12,6 +12,12 @@ MONGODB_URI = f"mongodb+srv://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@bloomstore.g
 client = pymongo.MongoClient(MONGODB_URI)
 db = client['power_track']
 
+# DATE ON WEBSITE
+date_str = "SUN 31ST MARCH, 2024"
+_, date_str = date_str.split(maxsplit=1)
+date_str = date_str.replace("ST", "").replace("ND", "").replace("RD", "").replace("TH", "")
+website_date = datetime.strptime(date_str, "%d %B, %Y").date()
+
 today_data = {
     'date': datetime.strptime(str(date.today()), '%Y-%m-%d'), 
     'metadata': {'source': 'power.gov.ng'},
@@ -36,13 +42,15 @@ yesterday_data = {
     'Lowest Voltage': '300.00kV @ Yola & Gombe TS @ 01:00 & 01:00Hrs'
 }
 
-# add data for today
-result = db.gridlines.insert_one(today_data)
-print(result)
-
-# add to the data for yesterday
+# add to the data for yesterday depending on how updated the website is.
 yesterday = date.today() - timedelta(days=1)
-filter = {"date": datetime.strptime(str(yesterday), '%Y-%m-%d')}
-update = {"$set": yesterday_data}
-result = db.gridlines.update_one(filter, update)
-print(result)
+
+if website_date == yesterday:
+    filter = {"date": datetime.strptime(str(yesterday), '%Y-%m-%d')}
+    update = {"$set": yesterday_data}
+    result = db.gridlines.update_one(filter, update)
+    print(result.modified_count)
+
+    # add data for today if it doesn't already exist
+    result = db.gridlines.insert_one(today_data)
+    print(result)
