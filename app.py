@@ -43,7 +43,7 @@ df.rename(columns={"date": "Date"}, inplace=True, errors="raise")
 st.set_page_config(layout="wide")
 
 # Create Streamlit dashboard
-st.markdown("<h1 style='text-align: center; color: white;'>Powerlines</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: white;'>Gridlines</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center; color: white;'>A view of the Nigerian grid\'s performance through lines (read time).</h3>", unsafe_allow_html=True)
 
 # Create layout for plots
