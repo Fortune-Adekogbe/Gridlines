@@ -3,3 +3,6 @@ pymongo[srv]==4.6.3
 python-dotenv==1.0.1
 beautifulsoup4==4.12.3
 requests==2.31.0
+# dash==2.16.1
+# dash-daq==0.5.0
+streamlit==1.32.2
