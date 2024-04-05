@@ -50,3 +50,6 @@ yesterday_data = {
     'Highest Voltage': highest_voltage.replace("Highest: ", ""),
     'Lowest Voltage': lowest_voltage.replace("Lowest: ", "")
 }
+
+print(today_data)
+print(yesterday_data)
