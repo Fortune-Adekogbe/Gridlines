@@ -21,21 +21,21 @@ website_date = datetime.strptime(date_str, "%d %B, %Y").date()
 # add to the data for yesterday depending on how updated the website is.
 yesterday = date.today() - timedelta(days=1)
 
-if website_date == yesterday:
-    filter = {"date": datetime.strptime(str(yesterday), '%Y-%m-%d')}
-    update = {"$set": yesterday_data}
-    result = db.gridlines.update_one(filter, update)
-    print(result.modified_count)
-    if (result.modified_count) == 0:
-        yesterday_data = {
-            "date": datetime.strptime(str(yesterday), '%Y-%m-%d'),
-            'metadata': {'source': 'power.gov.ng'},
-            **yesterday_data
-        }
-        result = db.gridlines.insert_one(yesterday_data)
-    print(result)
+# if website_date == yesterday:
+#     filter = {"date": datetime.strptime(str(yesterday), '%Y-%m-%d')}
+#     update = {"$set": yesterday_data}
+#     result = db.gridlines.update_one(filter, update)
+#     print(result.modified_count)
+#     if (result.modified_count) == 0:
+#         yesterday_data = {
+#             "date": datetime.strptime(str(yesterday), '%Y-%m-%d'),
+#             'metadata': {'source': 'power.gov.ng'},
+#             **yesterday_data
+#         }
+#         result = db.gridlines.insert_one(yesterday_data)
+#     print(result)
 
-    # add data for today if it doesn't already exist
-    result = db.gridlines.insert_one(today_data)
-    print(result)
-print("Done.")
+#     # add data for today if it doesn't already exist
+#     result = db.gridlines.insert_one(today_data)
+#     print(result)
+# print("Done.")
