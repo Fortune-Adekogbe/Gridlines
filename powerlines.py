@@ -17,6 +17,8 @@ db = client['power_track']
 df = pd.DataFrame(db.gridlines.find())
 del df['metadata']
 del df['_id']
+df['date'] = pd.to_datetime(df['date'])
+df.sort_values(by="date", inplace=True)
 
 plots = {
     "Power Generation": ['Peak Generation (MW)', 'Off-Peak Generation (MW)'],

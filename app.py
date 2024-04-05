@@ -19,6 +19,9 @@ db = client['power_track']
 
 # Load data from MongoDB
 df = pd.DataFrame(db.gridlines.find())
+df['date'] = pd.to_datetime(df['date'])
+df.sort_values(by="date", inplace=True)
+
 del df['metadata']
 del df['_id']
 
