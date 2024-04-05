@@ -20,7 +20,7 @@ website_date = datetime.strptime(date_str, "%d %B, %Y").date()
 
 # add to the data for yesterday depending on how updated the website is.
 yesterday = date.today() - timedelta(days=1)
-print(MONGODB_USERNAME)
+print(db.gridlines.find_one({"date": datetime.strptime(str(yesterday), '%Y-%m-%d')}))
 # if website_date == yesterday:
 #     filter = {"date": datetime.strptime(str(yesterday), '%Y-%m-%d')}
 #     update = {"$set": yesterday_data}
@@ -38,4 +38,4 @@ print(MONGODB_USERNAME)
 #     # add data for today if it doesn't already exist
 #     result = db.gridlines.insert_one(today_data)
 #     print(result)
-# print("Done.")
+print("Done.")
