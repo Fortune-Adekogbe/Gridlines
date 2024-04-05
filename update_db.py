@@ -20,7 +20,7 @@ website_date = datetime.strptime(date_str, "%d %B, %Y").date()
 
 # add to the data for yesterday depending on how updated the website is.
 yesterday = date.today() - timedelta(days=1)
-
+print(MONGODB_USERNAME)
 # if website_date == yesterday:
 #     filter = {"date": datetime.strptime(str(yesterday), '%Y-%m-%d')}
 #     update = {"$set": yesterday_data}
