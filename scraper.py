@@ -51,5 +51,6 @@ yesterday_data = {
     'Lowest Voltage': lowest_voltage.replace("Lowest: ", "")
 }
 
+print(website_date)
 print(today_data)
 print(yesterday_data)
