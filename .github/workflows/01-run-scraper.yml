@@ -34,8 +34,8 @@ jobs:
 
       - name: Pass Environment Variables and Run Scripts
         env:
-          USERNAME: ${{ secrets.MONGODB_USERNAME }}
-          PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+          MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           
         run: |
           # Pass the API_TOKEN secret as an environment variable to your script
