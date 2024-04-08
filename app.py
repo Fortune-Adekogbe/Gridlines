@@ -58,16 +58,17 @@ col1, col2 = st.columns(2)
 with col1:
     plot = "Power Generation"
     value = units[plot]
-    fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': 'Legend has it that:'}, title=f'{plot} Trend', markers=True)
+    fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': ''}, title=f'{plot} Trend', markers=True)
     fig.update_layout(
-        title=dict(text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='paper')
+        title=dict(y=0.85, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
     )
 
     fig.update_layout(legend=dict(
+        orientation="h",
         yanchor="top",
-        y=0.25,
-        xanchor="left",
-        x=0.75        
+        y=1.05,
+        xanchor="center",
+        x=0.5        
     ))
     st.plotly_chart(fig, use_container_width=True)
 
@@ -76,13 +77,15 @@ with col2:
     value = units[plot]
     fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': 'Legend has it that:'}, title=f'{plot} Trend', markers=True)
     fig.update_layout(
-        title=dict(text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='paper')
+        title=dict(y=0.85, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
     )
+
     fig.update_layout(legend=dict(
+        orientation="h",
         yanchor="top",
-        y=0.25,
-        xanchor="left",
-        x=0.75       
+        y=1.05,
+        xanchor="center",
+        x=0.5        
     ))
     st.plotly_chart(fig, use_container_width=True)
 
