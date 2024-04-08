@@ -27,12 +27,14 @@ del df['_id']
 
 # Define plots and units
 plots = {
-    "Power Generation": ['Peak Generation (MW)', 'Off-Peak Generation (MW)'],
+    "Power Generation": ['Peak Generation (MW)', 'Off-Peak Generation (MW)', "Grid @ 06:00 (MW)"],
+    #"Grid @ 06:00": ["Grid @ 06:00 (MW)"],
     "Energy": ['Energy Generated (MWh)', 'Energy Sent Out (MWh)']
 }
 
 units = {
     "Power Generation": "MW",
+    "Grid @ 06:00": "MW",
     "Energy": "MWh"
 }
 
@@ -60,6 +62,13 @@ with col1:
     fig.update_layout(
         title=dict(text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='paper')
     )
+
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.25,
+        xanchor="left",
+        x=0.75        
+    ))
     st.plotly_chart(fig, use_container_width=True)
 
 with col2:
@@ -69,9 +78,28 @@ with col2:
     fig.update_layout(
         title=dict(text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='paper')
     )
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.25,
+        xanchor="left",
+        x=0.75       
+    ))
     st.plotly_chart(fig, use_container_width=True)
 
-# # Create line plots
+# plot = "Grid @ 06:00"
+# value = units[plot]
+# fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': 'Legend has it that:'}, title=f'{plot} Trend', markers=True)
+# fig.update_layout(
+#     title=dict(text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='paper')
+# )
+# fig.update_layout(legend=dict(
+#     yanchor="top",
+#     y=0.25,
+#     xanchor="left",
+#     x=0.75       
+# ))
+# st.plotly_chart(fig, use_container_width=True)
+# # # Create line plots
 # for plot in plots:
 #     value = units[plot]
 #     fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': 'Legend has it that:'}, title=f'{plot} Trend', markers=True)
