@@ -75,7 +75,7 @@ with col1:
 with col2:
     plot = "Energy"
     value = units[plot]
-    fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': 'Legend has it that:'}, title=f'{plot} Trend', markers=True)
+    fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': ''}, title=f'{plot} Trend', markers=True)
     fig.update_layout(
         title=dict(y=0.85, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
     )
