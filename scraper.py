@@ -2,9 +2,22 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, date
 import re
+import random
 
-url = "https://power.gov.ng/"
-page = requests.get(url)
+url = "https://www.useragentlist.net/"
+request = requests.get(url)
+user_agents = []
+soup = BeautifulSoup(request.text, "html.parser")
+for user_agent in soup.select("pre.wp-block-code"):
+    user_agents.append(user_agent.text)
+
+url = "https://power.gov.ng"
+headers = {
+    'User-Agent': random.choice(user_agents)
+}
+
+print(headers)
+page = requests.get(url, headers=headers)
 soup = BeautifulSoup(page.content, "html.parser")
 
 website_date = soup.find(
