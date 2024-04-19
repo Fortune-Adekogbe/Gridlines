@@ -55,7 +55,7 @@ for plot in plots.keys():
     value = units[plot]
     fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': ''}, title=f'{plot} Trend', markers=True)
     fig.update_layout(
-        title=dict(y=0.90, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
+        title=dict(y=0.925, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
     )
 
     fig.update_layout(legend=dict(
