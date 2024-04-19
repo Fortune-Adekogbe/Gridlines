@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.graph_objs as go
 import plotly.express as px
 import pymongo
 from dotenv import load_dotenv, find_dotenv
@@ -51,59 +52,104 @@ st.set_page_config(layout="wide")
 st.markdown("<h1 style='text-align: center; color: white;'>Gridlines</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center; color: white;'>A view of the Nigerian grid\'s performance through lines (read time).</h3>", unsafe_allow_html=True)
 
-# Create layout for plots
-col1, col2 = st.columns(2)
-
-# Create line plots
-with col1:
-    plot = "Power Generation"
+for plot in plots.keys():
     value = units[plot]
     fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': ''}, title=f'{plot} Trend', markers=True)
     fig.update_layout(
-        title=dict(y=0.85, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
+        title=dict(y=0.90, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
     )
 
     fig.update_layout(legend=dict(
         orientation="h",
         yanchor="top",
-        y=1.05,
+        y=1.125,
         xanchor="center",
         x=0.5        
     ))
-    st.plotly_chart(fig, use_container_width=True)
 
-with col2:
-    plot = "Energy"
-    value = units[plot]
-    fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': ''}, title=f'{plot} Trend', markers=True)
+    # Add range slider
     fig.update_layout(
-        title=dict(y=0.85, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
+        xaxis=dict(
+            rangeselector=dict(
+                buttons=list([
+                    dict(count=7, label="1 week", step="day", stepmode="backward"),
+                    dict(count=1, label="1 month", step="month", stepmode="backward"),
+                    # dict(count=3, label="3 months", step="month", stepmode="backward"),
+                    dict(label="All", step="all"),
+                ])
+            ),
+            rangeslider=dict(
+                visible=True
+            ),
+            type="date",
+        ),
+
     )
 
-    fig.update_layout(legend=dict(
-        orientation="h",
-        yanchor="top",
-        y=1.05,
-        xanchor="center",
-        x=0.5        
-    ))
     st.plotly_chart(fig, use_container_width=True)
 
-# plot = "Grid @ 06:00"
+# # SIDE BY SIDE PLOTS
+# col1, col2 = st.columns(2)
+
+# # Create line plots
+# for col, plot in zip(st.columns(2), plots.keys()):
+#     with col:
+#         value = units[plot]
+#         fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': ''}, title=f'{plot} Trend', markers=True)
+#         fig.update_layout(
+#             title=dict(y=0.9, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
+#         )
+
+#         fig.update_layout(legend=dict(
+#             orientation="h",
+#             yanchor="top",
+#             y=1.125,
+#             xanchor="center",
+#             x=0.5        
+#         ))
+#         st.plotly_chart(fig, use_container_width=True)
+
+# # WEEKLY VIEW WITH BUTTONS FOR NAVIGATION
+# plot = "Energy"
 # value = units[plot]
-# fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': 'Legend has it that:'}, title=f'{plot} Trend', markers=True)
+
+# # Setup state for storing the current view range
+# if 'current_week_start' not in st.session_state:
+#     st.session_state.current_week_start = df['Date'].iloc[-7]
+
+# # Function to update the week view
+# def update_week(offset):
+#     start_index = df.index[df['Date'] == st.session_state.current_week_start][0] + offset * 7
+#     if start_index < 0:
+#         start_index = 0  # Prevent index out of range
+#     elif start_index >= len(df) - 7:
+#         start_index = len(df) - 7  # Prevent index out of range
+#     st.session_state.current_week_start = df['Date'].iloc[start_index]
+
+# # Display the selected week's data using Plotly
+# current_range = [st.session_state.current_week_start, st.session_state.current_week_start + pd.Timedelta(days=6)]
+
+# fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': ''}, title=f'{plot} Trend', markers=True)
+# fig.update_layout(xaxis_range=current_range)
+
 # fig.update_layout(
-#     title=dict(text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='paper')
+#     title=dict(y=0.9, text=f'{plot} Trend', font=dict(size=25), automargin=True, yref='container')
 # )
+
 # fig.update_layout(legend=dict(
+#     orientation="h",
 #     yanchor="top",
-#     y=0.25,
-#     xanchor="left",
-#     x=0.75       
+#     y=1.125,
+#     xanchor="center",
+#     x=0.5        
 # ))
+
 # st.plotly_chart(fig, use_container_width=True)
-# # # Create line plots
-# for plot in plots:
-#     value = units[plot]
-#     fig = px.line(df, x='Date', y=plots[plot], labels={'value': value, 'variable': 'Legend has it that:'}, title=f'{plot} Trend', markers=True)
-#     st.plotly_chart(fig, use_container_width=True)
+# # Buttons for navigation
+# col1, col2 = st.columns(2)
+# with col1:
+#     if st.button('Previous Week'):
+#         update_week(-1)
+# with col2:
+#     if st.button('Next Week'):
+#         update_week(1)
