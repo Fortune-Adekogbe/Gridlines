@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.graph_objs as go
 import plotly.express as px
 import pymongo
 from dotenv import load_dotenv, find_dotenv
@@ -70,14 +69,16 @@ for plot in plots.keys():
     # Add range slider
     fig.update_layout(
         xaxis=dict(
-            rangeselector=dict(
-                buttons=list([
-                    dict(count=7, label="1 week", step="day", stepmode="backward"),
-                    dict(count=1, label="1 month", step="month", stepmode="backward"),
-                    # dict(count=3, label="3 months", step="month", stepmode="backward"),
-                    dict(label="All", step="all"),
-                ])
-            ),
+            # rangeselector=dict(
+            #     buttons=list([
+            #         dict(count=7, label="1 week", step="day", stepmode="backward"),
+            #         dict(count=1, label="1 month", step="month", stepmode="backward"),
+            #         # dict(count=3, label="3 months", step="month", stepmode="backward"),
+            #         dict(label="All", step="all"),
+            #     ]),
+            #     y=1.15,
+            #     yanchor="bottom"
+            # ),
             rangeslider=dict(
                 visible=True
             ),
