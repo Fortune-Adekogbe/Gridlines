@@ -60,8 +60,8 @@ for plot in plots.keys():
 
     fig.update_layout(legend=dict(
         orientation="h",
-        yanchor="top",
-        y=1.125,
+        yanchor="bottom",
+        y=1.0,
         xanchor="center",
         x=0.5        
     ))
