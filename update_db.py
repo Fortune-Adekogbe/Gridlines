@@ -15,7 +15,7 @@ db = client['power_track']
 
 # DATE ON WEBSITE
 _, date_str = website_date.split(maxsplit=1)
-date_str = date_str.replace("ST", "").replace("ND", "").replace("RD", "").replace("TH", "")
+date_str = date_str.replace("ST ", " ").replace("ND", "").replace("RD", "").replace("TH", "")
 website_date = datetime.strptime(date_str, "%d %B, %Y").date()
 
 # add to the data for yesterday depending on how updated the website is.
