@@ -44,6 +44,10 @@ pip install -r requirements.txt
 python powerlines.py
 ```
 
+## Possible Future Work
+- Predicting the likelihood of grid collapse.
+- Filling in gaps in data using predictive methods 
+
 ## Acknowledgement
 - Myself for being HIM.
 - The Federal Ministry of Power, Nigeria for publishing grid data.
