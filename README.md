@@ -45,8 +45,10 @@ python powerlines.py
 ```
 
 ## Possible Future Work
-- Predicting the likelihood of grid collapse.
-- Filling in gaps in data using predictive methods 
+- Adding summaries of the grid's performance per month
+- Predicting the likelihood of grid collapse
+- Filling in gaps in data using predictive methods
+- Adding news information to complement data in carring out points 2 and 3. Possibly also adding news summaries to the dashboard for more context.
 
 ## Acknowledgement
 - Myself for being HIM.
