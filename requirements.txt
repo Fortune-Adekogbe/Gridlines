@@ -2,7 +2,7 @@ pandas==2.2.1
 pymongo[srv]==4.6.3 
 python-dotenv==1.0.1
 beautifulsoup4==4.12.3
-requests==2.31.0
+requests==2.32.3 #2.31.0
 dash==2.16.1
 streamlit==1.32.2
 plotly==5.20.0
