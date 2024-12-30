@@ -4,17 +4,21 @@ from datetime import datetime, date
 import re
 import random
 
-url = "https://www.useragentlist.net/"
-request = requests.get(url)
-user_agents = []
-soup = BeautifulSoup(request.text, "html.parser")
-for user_agent in soup.select("pre.wp-block-code"):
-    user_agents.append(user_agent.text)
+url = "https://www.useragents.me/" # "https://www.useragentlist.net/"
 
-url = "https://power.gov.ng"
-headers = {
-    'User-Agent': random.choice(user_agents)
-}
+try:
+    request = requests.get(url)
+    user_agents = []
+    soup = BeautifulSoup(request.text, "html.parser")
+    for user_agent in soup.select("textarea.form-control.ua-textarea"): # pre.wp-block-code 
+        user_agents.append(user_agent.text)
+
+    url = "https://power.gov.ng"
+    headers = {
+        'User-Agent': random.choice(user_agents)
+    }
+except:
+    raise(ConnectionAbortedError("Problem with User Agents Website."))
 
 print(headers)
 page = requests.get(url, headers=headers)
