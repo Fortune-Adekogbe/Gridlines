@@ -25,8 +25,7 @@ if website_date == yesterday:
     filter = {"date": datetime.strptime(str(yesterday), '%Y-%m-%d')}
     update = {"$set": yesterday_data}
     result = db.gridlines.update_one(filter, update)
-    print(result.modified_count)
-    if (result.modified_count) == 0:
+    if (result.matched_count) == 0:
         yesterday_data = {
             "date": datetime.strptime(str(yesterday), '%Y-%m-%d'),
             'metadata': {'source': 'power.gov.ng'},
