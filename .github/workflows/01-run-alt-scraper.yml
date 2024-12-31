@@ -1,0 +1,42 @@
+name: Scrape Grid Data
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch: {}  # Add workflow dispatch for manual triggering
+  
+jobs:
+  scrape-grid-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: Installing package list
+        run: apt list --installed
+
+      - name: Removing previous chrome instances on runner 
+        run: sudo apt purge google-chrome-stable
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install xvfb
+        run: sudo apt-get install xvfb
+
+      - name: Pass Environment Variables and Run Scripts
+        env:
+          MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+          
+        run: |
+          # Pass the API_TOKEN secret as an environment variable to your script
+          python alt_scraper.py
