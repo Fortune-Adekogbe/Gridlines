@@ -1,9 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime, date, timedelta
-import re
+from datetime import date, timedelta
 import random
 from db_setup import *
+from selenium_setup import *
 
 url = "https://www.useragents.me/" # "https://www.useragentlist.net/"
 
@@ -77,26 +77,38 @@ def write_to_mongo(the_date, data):
         result = db.gridlines.insert_one(data)
     return result
 
-write_to_mongo(str(date.today() - timedelta(days=1)), get_data(curr))
-write_to_mongo(str(date.today() - timedelta(days=2)), get_data(prev))
-
 # Use selenium for this bit.
+driver.get(url)
+# Click "get generation" button
+button = driver.find_element(By.XPATH, '//*[@id="MainContent_lnkShowAdditionalData"]')
+driver.execute_script("arguments[0].click();", button)
 
-# ((power, frequency),
-#  (highest_frequency, lowest_frequency),
-#  (highest_voltage, lowest_voltage)) = [i.text.strip().split("\n") for i in soup.find_all("p", attrs={"class": "py-0 m-0 size12"})]
+card = driver.find_element(By.CSS_SELECTOR, 'div[class="modal-content"]')
+freq, morn = card.find_elements(By.CSS_SELECTOR, 'div[class="col-lg-6 col-md-12 col-sm-12"]')
+voltage = card.find_element(By.CSS_SELECTOR, 'div[class="col-lg-8 col-md-12 col-sm-12"]')
 
 
-# def extractor(before, after, input):
-#     output = re.search(rf'(?<={before})[\d,]+(?:\.\d+)?(?={after})', input)
-#     output = output.group(0)
-#     output = output.replace(',', '')
-#     output = float(output)
-#     return output
+highest_frequency, highest_freq_time, lowest_frequency, lowest_freq_time = freq.find_elements(By.CSS_SELECTOR, 'span[class="control-label"]')
+power06, freq06, *_ = morn.find_elements(By.CSS_SELECTOR, 'span[class="control-label"]')
+highest_voltage, _, lowest_voltage, _ = voltage.find_elements(By.CSS_SELECTOR, 'span[class="control-label"]')
 
-# today_data = {
-#     'date': datetime.strptime(str(date.today()), '%Y-%m-%d'),
-#     'metadata': {'source': 'power.gov.ng'},
-#     'Grid @ 06:00 (MW)': extractor("Generation: ", "MW", power),
-#     'Frequency @ 06:00 (Hz)': extractor("Frequency: ", "Hz", frequency),
-# }
+today_data = {
+    'date': str(date.today()),
+    'metadata': {'source': 'niggrid.org'},
+    'Grid @ 06:00 (MW)': power06.text.replace(',', ''),
+    'Frequency @ 06:00 (Hz)': freq06.text
+}
+
+curr_data = get_data(curr)
+curr_data['Highest Frequency (Hz)'] = highest_frequency.text
+curr_data['Lowest Frequency (Hz)'] = lowest_frequency.text
+curr_data['Hour @ Highest Frequency'] = highest_freq_time.text
+curr_data['Hour @ Lowest Frequency'] = lowest_freq_time.text
+curr_data['Highest Voltage'] = highest_voltage.text
+curr_data['Lowest Voltage'] = lowest_voltage.text
+
+# print(today_data)
+# print(curr_data)
+write_to_mongo(str(date.today()), today_data)
+write_to_mongo(str(date.today() - timedelta(days=1)), curr_data)
+write_to_mongo(str(date.today() - timedelta(days=2)), get_data(prev))
