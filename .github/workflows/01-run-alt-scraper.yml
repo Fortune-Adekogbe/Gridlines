@@ -1,8 +1,8 @@
-name: Scrape Grid Data
+name: Scrape Alternate Grid Data
 
 on:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '* 8 * * *'
   workflow_dispatch: {}  # Add workflow dispatch for manual triggering
   
 jobs:
