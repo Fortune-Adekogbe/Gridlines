@@ -1,4 +1,4 @@
-name: Scrape Grid Data
+name: Scrape Grid Data By Hour
 
 on:
   schedule:
