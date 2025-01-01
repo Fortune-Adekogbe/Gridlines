@@ -1,24 +1,8 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime, date, timedelta
 from tqdm.auto import tqdm
 import time
 from db_setup import *
-
-chrome_options = webdriver.ChromeOptions()    
-# Adding options to run in headless mode (old) and disable notifications.
-options = [
-   "--headless",
-   "--disable-notifications"
-]
-
-for option in options:
-    chrome_options.add_argument(option)
-
-# creating driver
-driver = webdriver.Chrome(options = chrome_options)
+from selenium_setup import *
 
 def get_grid_data(date_):
     date_str = str(date_).replace('-', '/')
@@ -45,35 +29,40 @@ def get_grid_data(date_):
     # Identify the custom scrollable container
     scroll_container = driver.find_element(By.XPATH, '//*[@id="form1"]/div[3]/div[2]')  # Replace with the correct selector
 
-    # Scrolling logic
-    grid_data = dict()
+    grid_data = dict() # storage for grid data
 
-    # get column names in grid table outside loop logic.
-    body = wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'table'))).find_elements(By.TAG_NAME, 'tr')
-    _, _, *keys = [i.text for i in body[0].find_elements(By.TAG_NAME, 'th')]
+    # get column names in grid table outside loop logic because of ridiculous javascript
+    header = wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'table'))).find_element(By.TAG_NAME, 'tr')
+    _, _, *keys = [i.text for i in header.find_elements(By.TAG_NAME, 'th')]
 
+    # define scrolling logic
     last_scroll_position = 0
     while True:
         # Scroll down by a fixed amount
         driver.execute_script("arguments[0].scrollTop += 600;", scroll_container)
 
         try:
+            # get table in view
             grid_table = wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'table')))
 
-            body = grid_table.find_elements(By.TAG_NAME, 'tr')
+            body = grid_table.find_elements(By.TAG_NAME, 'tr') # get table rows
 
             # Check if header is in view
             if len(body[0].find_elements(By.TAG_NAME, 'th')) == 27:
-                header, *body = body
-                
+                _, *body = body
+
             for genco in body:
-                _, company, *hour_data = [i.text for i in genco.find_elements(By.TAG_NAME, 'td')]
-                # print(hour_data)
-                # Skip rows that are not in view
-                if len(hour_data) < 24:
-                    continue
-                if not company:
-                    company = 'Hour Total'
+                try:
+                    _, company, *hour_data = [i.text for i in genco.find_elements(By.TAG_NAME, 'td')]
+                    # print([_, company, *hour_data])
+                    # Skip rows that are not in view
+                    if len(hour_data) < 24:
+                        continue
+                    if not company:
+                        company = 'Hour Total'
+                except ValueError:
+                    ...
+
                 
                 grid_data[company] = dict(zip(keys, hour_data))
         except:
@@ -106,7 +95,7 @@ url = "https://niggrid.org/GenerationProfile2"
 driver.get(url)
 driver.maximize_window()
 
-curr_date = date.today() - timedelta(days=1)
+curr_date = date.today() # - timedelta(days=1)
 
 REWIND = False
 if REWIND:
@@ -116,17 +105,26 @@ if REWIND:
     progress_bar = tqdm(total=total_iterations, desc="Scraping...")
 
     while curr_date >= start_of_time:
-        the_date, grid_data = get_grid_data(curr_date)
-
-        write_to_mongo(the_date, grid_data)
+        try:
+            the_date, grid_data = get_grid_data(curr_date)
+            write_to_mongo(the_date, grid_data)
+        except Exception as e:
+            with open('failed.txt', 'a') as f:
+                f.write(str(curr_date) +"\t"+ str(e))
 
         curr_date -= timedelta(days=1)
         if curr_date.day == 31:
             time.sleep(42)
         progress_bar.update(1)
 else:
-    the_date, grid_data = get_grid_data(curr_date)
-    print(grid_data.keys())
-    write_to_mongo(the_date, grid_data)
+    try:
+        the_date, grid_data = get_grid_data(curr_date)
+        print(the_date)
+        print(len(grid_data.keys()))
+        print(sorted(grid_data.keys()))
+        write_to_mongo(the_date, grid_data)
+    except Exception as e:
+        print("No Data. Probable Grid Failure.")
+        print(e)
 # Close the driver
 driver.quit()
