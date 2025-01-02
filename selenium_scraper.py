@@ -27,43 +27,22 @@ def get_grid_data(date_):
     website_date = datetime.strptime(website_date, '%Y/%m/%d').date()
     # print(date_str, website_date)
 
-    # Identify the custom scrollable container
-    # scroll_container = driver.find_element(By.XPATH, '//*[@id="form1"]/div[3]/div[2]')  # Replace with the correct selector
-
     grid_data = dict() # storage for grid data
 
-    # get column names in grid table outside loop logic because of ridiculous javascript
-    # header = wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'table'))).find_element(By.TAG_NAME, 'tr')
-    # _, _, *keys = [i.text for i in header.find_elements(By.TAG_NAME, 'th')]
-
-    # define scrolling logic
-    # last_scroll_position = 0
-    # while True:
-    #     # scroll down by a fixed amount
-    #     driver.execute_script("arguments[0].scrollTop += 600;", scroll_container)
-
     try:
-        # get table in view
+        # get table
         grid_table = wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'table')))
         inner_html = driver.execute_script("return arguments[0].innerHTML;", grid_table)
         soup = BeautifulSoup(inner_html, "html.parser")
+
+        # separate header and rows
         header, *body = soup.find_all('tr')
 
         _, _, *keys = [i.text for i in header.find_all('th')]
 
-        # body = grid_table.find_elements(By.TAG_NAME, 'tr') # get table rows
-
-        # Check if header is in view
-        # if len(body[0].find_elements(By.TAG_NAME, 'th')) == 27:
-        #     _, *body = body
-
         for genco in body:
             try:
-                _, company, *hour_data = [i.text for i in genco.find_all('td')]# [i.text for i in genco.find_elements(By.TAG_NAME, 'td')]
-                # print([_, company, *hour_data])
-                # Skip rows that are not in view
-                # if len(hour_data) < 24:
-                #     continue
+                _, company, *hour_data = [i.text for i in genco.find_all('td')]
                 if not company:
                     company = 'Hour Total'
             except ValueError:
@@ -73,12 +52,6 @@ def get_grid_data(date_):
             grid_data[company] = dict(zip(keys, hour_data))
     except:
         pass
-
-        # # Check the new scroll position
-        # new_scroll_position = driver.execute_script("return arguments[0].scrollTop;", scroll_container)
-        # if new_scroll_position == last_scroll_position:  # Stop if no new content loads
-        #     break
-        # last_scroll_position = new_scroll_position
 
     return str(website_date), grid_data
 
