@@ -109,6 +109,7 @@ curr_data['Lowest Voltage'] = lowest_voltage.text
 
 # print(today_data)
 # print(curr_data)
+
 write_to_mongo(str(date.today()), today_data)
 write_to_mongo(str(date.today() - timedelta(days=1)), curr_data)
 write_to_mongo(str(date.today() - timedelta(days=2)), get_data(prev))
