@@ -10,13 +10,13 @@ jobs:
   commit:
     runs-on: ubuntu-latest
     steps:
-      # 1. Check out the repo (full history is fine, though not strictly needed here)
+      # 1. Check out the repo
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2. Update (or create) your marker file
+      # 2. Update marker file
       - name: Update marker file
         run: |
           echo "Automated monthly commit on $(date --utc)" > schedule-marker.txt
