@@ -5,6 +5,7 @@ on:
   schedule:
     # runs at 00:00 UTC on day-of-month = 1, every month to keep actions alive.
     - cron: '0 0 1 * *'
+  workflow_dispatch: {}  # Add workflow dispatch for manual triggering
 
 jobs:
   commit:
