@@ -45,7 +45,8 @@ python powerlines.py
 ```
 
 ## Possible Future Work
-- Scraping this new grid website, adding hourly reports on grid status possibly with some LLM. Analysing failure events with scraped data
+- Scraping the newly found grid website, adding hourly reports on grid status possibly with some LLM. Analysing failure events with scraped data ✅
+- Writing script to automate scraping the new grid webiste for a limited timespan to fill in missing values
 - Adding summaries of the grid's performance per month
 - Predicting the likelihood of grid collapse
 - Filling in gaps in data using predictive methods
