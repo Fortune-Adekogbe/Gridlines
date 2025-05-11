@@ -1,0 +1,31 @@
+# .github/workflows/monthly-commit.yml
+name: Monthly Scheduled Commit
+
+on:
+  schedule:
+    # runs at 00:00 UTC on day-of-month = 1, every month to keep actions alive.
+    - cron: '0 0 1 * *'
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Check out the repo (full history is fine, though not strictly needed here)
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2. Update (or create) your marker file
+      - name: Update marker file
+        run: |
+          echo "Automated monthly commit on $(date --utc)" > schedule-marker.txt
+
+      # 3. Commit & push
+      - name: Commit & Push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add schedule-marker.txt
+          git commit -m "🔄 Monthly scheduled commit"
+          git push
