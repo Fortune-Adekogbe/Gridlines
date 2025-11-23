@@ -28,8 +28,8 @@ soup = BeautifulSoup(page.content, "html.parser")
 website_date = soup.find("span", attrs={"id": "MainContent_lblCurrentDay"}).text
 
 print(website_date)
-
-(_, _, curr,_, prev, *_) = soup.select("div.row")
+content = soup.select_one("div.content")
+(*_, curr,_, prev, _, _) = content.select("div.row")
 
 def get_data(object):
     data = {
