@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 import requests
 
-response = requests.get(url, timeout=30)
+response = requests.get("https://niggrid.org/GenerationProfile2", timeout=30)
 print(response.status_code, response.url, len(response.content))
 
 def get_grid_data(date_):
