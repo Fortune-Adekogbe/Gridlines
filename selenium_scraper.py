@@ -71,7 +71,22 @@ def write_to_mongo(the_date, data):
 
 url = "https://niggrid.org/GenerationProfile2"
 
-driver.get(url)
+# try to get the URL a few times
+attempts = 5
+
+for attempt in range(attempts):
+    driver = create_driver()
+
+    try:
+        driver.get(url)
+        break
+    except (TimeoutException, WebDriverException) as error:
+        print(f"Error at attempt {attempt+1}: {error}.")
+        driver.quit()
+
+        if attempt + 1 < attempts:
+            time.sleep(5 * (attempt + 1))
+
 driver.maximize_window()
 
 curr_date = date.today() # - timedelta(days=1)
