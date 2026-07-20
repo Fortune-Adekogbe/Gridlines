@@ -5,11 +5,6 @@ from db_setup import *
 from selenium_setup import *
 from bs4 import BeautifulSoup
 
-import requests
-
-response = requests.get("https://niggrid.org/GenerationProfile2", timeout=30)
-print(response.status_code, response.url, len(response.content))
-
 def get_grid_data(date_):
     date_str = str(date_).replace('-', '/')
 
