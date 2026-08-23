@@ -29,7 +29,7 @@ website_date = soup.find("span", attrs={"id": "MainContent_lblCurrentDay"}).text
 
 print(website_date)
 content = soup.select_one("div.content")
-(*_, curr,_, prev, _, _) = content.select("div.row")
+(_, _, curr,_, prev, *_) = content.select("div.row")
 
 def get_data(object):
     data = {
@@ -77,8 +77,25 @@ def write_to_mongo(the_date, data):
         result = db.gridlines.insert_one(data)
     return result
 
+# try to get the URL a few times
+attempts = 5
+
 # Use selenium for this bit.
+for attempt in range(attempts):
+    driver = create_driver()
+
+    try:
+        driver.get(url)
+        break
+    except (TimeoutException, WebDriverException) as error:
+        print(f"Error at attempt {attempt+1}: {error}.")
+        driver.quit()
+
+        if attempt + 1 < attempts:
+            time.sleep(5 * (attempt + 1))
+
 driver.get(url)
+
 # Click "get generation" button
 button = driver.find_element(By.XPATH, '//*[@id="MainContent_lnkShowAdditionalData"]')
 driver.execute_script("arguments[0].click();", button)
