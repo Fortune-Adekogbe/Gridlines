@@ -44,15 +44,6 @@ pip install -r requirements.txt
 python powerlines.py
 ```
 
-## Possible Future Work
-- Ingesting DisCos Load Profile.
-- Analyzing failure events using scraped data.
-- Periodically updating records or specifically scraping missing hourly records.
-- Backfilling power gen data displayed in dashboard from 2017 if the peak and offpeak calculations are properly validated.
-- Adding summaries of the grid's performance per month.
-- Predicting the likelihood of grid collapse.
-- Filling in gaps that are beyond the collected data using predictive methods.
-- Adding news information to complement predictive tasks. Possibly also adding news summaries to the dashboard for more context.
 
 ## Acknowledgement
 - Myself for being HIM.
