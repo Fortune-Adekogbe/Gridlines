@@ -93,6 +93,7 @@ curr_date = date.today() # - timedelta(days=1)
 
 REWIND = False
 if REWIND:
+    # goes back in time to scrape data. Can be adapted to periodically update records or scrape missing records specifically.
     start_of_time = datetime.strptime("2017/11/03", '%Y/%m/%d').date()
 
     total_iterations = (curr_date - start_of_time).days

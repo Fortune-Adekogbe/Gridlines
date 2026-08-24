@@ -38,6 +38,73 @@ for col in relevant_cols:
 
 df = df.groupby('date').max().reset_index()
 
+# def fill_the_gap(the_date):
+#     """
+#     Uses date information to reproduce power generation data from gridmoments.
+#     """
+#     filter = {"date": the_date}
+#     result = db.gridmoments.find_one(filter, {"_id": 0, "date": 1, "Hour Total": 1})
+
+#     if not isinstance(result, dict):
+#         return None
+
+#     # print(result["date"])
+#     hourly_values = list(result["Hour Total"].values())[:-1] # Drop Total
+#     # print(hourly_values)
+#     peak_generation = max(hourly_values)
+#     off_peak_generation = min([i for i in hourly_values if i != '0.00'])
+#     grid_at_0600 = result["Hour Total"]["06:00"]
+#     return {"Peak Generation (MW)": float(peak_generation.replace(',','')), "Off-Peak Generation (MW)": float(off_peak_generation.replace(',','')), "Grid @ 06:00 (MW)": float(grid_at_0600.replace(',',''))}
+
+
+def fill_the_gap_batch(missing_dates):
+    """
+    Uses date information to reproduce power generation data from gridmoments.
+    """
+    filter = {"date": {"$in": missing_dates}}
+    result = list(db.gridmoments.find(filter, {"_id": 0, "date": 1, "Hour Total": 1}))
+
+    if len(result) == 0:
+        return None
+    missing_data = []
+    for doc in result:
+        missing_row = {"date": doc["date"]}
+        hourly_values = list(doc["Hour Total"].values())[:-1] # Drop Total
+        # print(hourly_values)
+        peak_generation = max(hourly_values)
+        off_peak_generation = min([i for i in hourly_values if i != '0.00'])
+        grid_at_0600 = doc["Hour Total"]["06:00"]
+        missing_row["Peak Generation (MW)"] = float(peak_generation.replace(',',''))
+        missing_row["Off-Peak Generation (MW)"] = float(off_peak_generation.replace(',',''))
+        missing_row["Grid @ 06:00 (MW)"] = float(grid_at_0600.replace(',',''))
+        missing_data.append(missing_row)
+    return missing_data
+
+# temporarily make the date column the index
+df = df.set_index("date")
+
+# create rows for missing dates
+# TODO: this can technically start from 2017; Verify calculations before updating
+df = df.reindex(pd.date_range(df.index.min(), df.index.max(), freq="D"))
+
+# identify all rows with missing values
+missing_dates = df.index[df.isna().any(axis=1)].strftime("%Y-%m-%d").tolist()
+# dates = df.index[df.isna().any(axis=1)]
+
+# call fill_the_gap_batch to get data for rows with missing cells
+patch = (
+    pd.DataFrame(fill_the_gap_batch(missing_dates))
+    .assign(date=lambda x: pd.to_datetime(x["date"]))
+    .set_index("date")
+)
+# patch = pd.DataFrame({
+#     d: fill_the_gap(d.strftime("%Y-%m-%d"))
+#     for d in dates
+# }).T
+
+# fill the cells and reset the index; existing values are untouched
+df = df.fillna(patch).rename_axis("date").reset_index()
+
 # Define plots and units
 plots = {
     "Power Generation": ['Peak Generation (MW)', 'Off-Peak Generation (MW)', "Grid @ 06:00 (MW)"],
