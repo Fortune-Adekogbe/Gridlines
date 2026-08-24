@@ -25,6 +25,19 @@ df.sort_values(by="date", inplace=True)
 del df['metadata']
 del df['_id']
 
+# extract relevant columns for current dashboard
+relevant_cols = ['date', 'Peak Generation (MW)', 'Off-Peak Generation (MW)', "Grid @ 06:00 (MW)", 'Energy Generated (MWh)', 'Energy Sent Out (MWh)']
+
+df = df[relevant_cols]
+
+# convert columns to numeric datatype and remove duplicates
+for col in relevant_cols:
+    if col != 'date':
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+        df[col] = df[col].astype("Float64")
+
+df = df.groupby('date').max().reset_index()
+
 # Define plots and units
 plots = {
     "Power Generation": ['Peak Generation (MW)', 'Off-Peak Generation (MW)', "Grid @ 06:00 (MW)"],
