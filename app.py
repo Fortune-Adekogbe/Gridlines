@@ -85,7 +85,7 @@ df = df.set_index("date")
 
 # create rows for missing dates
 # TODO: this can technically start from 2017; Verify calculations before updating
-df = df.reindex(pd.date_range(df.index.min(), df.index.max(), freq="D"))
+df = df.reindex(pd.date_range(df.index.min(),pd.Timestamp.today().normalize(), freq="D"))
 
 # identify all rows with missing values
 missing_dates = df.index[df.isna().any(axis=1)].strftime("%Y-%m-%d").tolist()
