@@ -8,3 +8,4 @@ streamlit==1.32.2
 plotly==5.20.0
 selenium==4.27.1
 tqdm==4.67.1
+certifi>=2026.10.19

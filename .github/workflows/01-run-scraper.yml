@@ -16,7 +16,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: "3.11"
+          pip-version: "26.2.2"
 
       - name: Installing package list
         run: apt list --installed
