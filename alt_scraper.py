@@ -12,6 +12,7 @@ try:
     request = requests.get(url)
     user_agents = []
     soup = BeautifulSoup(request.text, "html.parser")
+    soup = soup.select_one("table.table.table-hover")
     for user_agent in soup.select("textarea.form-control.font-monospace"): # pre.wp-block-code 
         user_agents.append(user_agent.text)
 
@@ -20,6 +21,7 @@ try:
     }
 except:
     raise(ConnectionAbortedError("Problem with User Agents Website."))
+print(len(user_agents))
 
 print(headers)
 url = "https://niggrid.org/Dashboard"
