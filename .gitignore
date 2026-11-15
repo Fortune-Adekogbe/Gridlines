@@ -44,3 +44,6 @@ Thumbs.db
 # ignore test files
 test*
 test/*
+# !tests/
+# !tests/**
+.venv-dashboard/
