@@ -27,7 +27,7 @@ def initialize_filters(earliest, latest, hourly_dates):
         if values["window"] == (earliest, latest):
             st.session_state["preset"] = "All history"
         else:
-            st.session_state["preset"] = "Custom" if "start" in parameters or "end" in parameters else "30 days"
+            st.session_state["preset"] = "Custom"
         st.session_state["_last_query"] = parameters
     if len(st.session_state["window"]) == 2:
         start, end = st.session_state["window"]

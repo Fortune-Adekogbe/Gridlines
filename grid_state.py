@@ -1,11 +1,11 @@
 """URL state shared by the dashboard's pages."""
 
-from datetime import date, timedelta
+from datetime import date
 
 
 def initial_state(parameters, earliest, latest):
     notices = []
-    default_start = max(earliest, latest - timedelta(days=29))
+    default_start = earliest
 
     def parsed_day(key, default):
         raw = parameters.get(key)
@@ -24,7 +24,7 @@ def initial_state(parameters, earliest, latest):
     end = parsed_day("end", latest)
     if start > end:
         start, end = default_start, latest
-        notices.append("The shared date interval was reversed. The latest 30 days were selected.")
+        notices.append("The shared date interval was reversed. All history was selected.")
     day = parsed_day("day", end)
     if not start <= day <= end:
         day = end
