@@ -18,11 +18,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Set up Chrome
+      - name: Set up Chrome and ChromeDriver
         uses: browser-actions/setup-chrome@v2
-
-      - name: Set up ChromeDriver
-        uses: browser-actions/setup-chromedriver@v1
+        with:
+          install-chromedriver: true
 
       - name: Securely upgrade pip
         run: |
