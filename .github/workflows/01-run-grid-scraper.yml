@@ -34,6 +34,13 @@ jobs:
         with:
           install-chromedriver: true
 
+      - name: Test Chrome startup
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: |
+          "$CHROME_PATH" --version
+          timeout 30s "$CHROME_PATH" --headless --enable-logging=stderr --dump-dom about:blank
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
