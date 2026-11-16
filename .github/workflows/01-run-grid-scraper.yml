@@ -25,6 +25,15 @@ jobs:
       - name: Installing package list
         run: apt list --installed
 
+      - name: Removing previous chrome instances on runner 
+        run: sudo apt-get purge -y google-chrome-stable
+
+      - name: Set up Chrome for Testing and ChromeDriver
+        id: chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          install-chromedriver: true
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
