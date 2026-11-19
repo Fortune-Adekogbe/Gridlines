@@ -8,6 +8,9 @@ on:
 jobs:
   scrape-grid-data:
     runs-on: ubuntu-latest
+    env:
+      CHROME_BIN: /usr/bin/google-chrome
+      SE_CHROMEDRIVER: /usr/bin/chromedriver
 
     steps:
       - name: Check out code
@@ -25,29 +28,25 @@ jobs:
       - name: Installing package list
         run: apt list --installed
 
-      - name: Removing previous chrome instances on runner 
-        run: sudo apt-get purge -y google-chrome-stable
-
-      - name: Set up Chrome for Testing and ChromeDriver
-        id: chrome
-        uses: browser-actions/setup-chrome@v2
-        with:
-          install-chromedriver: true
-
-      - name: Test Chrome startup
-        env:
-          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
-        run: |
-          "$CHROME_PATH" --version
-          timeout 30s "$CHROME_PATH" --headless --enable-logging=stderr --dump-dom about:blank
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install xvfb
-        run: sudo apt-get install xvfb
+      - name: Test Chrome and ChromeDriver startup
+        run: |
+          "$CHROME_BIN" --version
+          "$SE_CHROMEDRIVER" --version
+          timeout 30s python - <<'PY'
+          import subprocess
+
+          from selenium.webdriver.chrome.service import Service
+          from selenium_setup import create_driver
+
+          service = Service(service_args=["--verbose"], log_output=subprocess.STDOUT)
+          with create_driver(service=service) as driver:
+              driver.get("about:blank")
+          PY
 
       - name: Pass Environment Variables and Run Scripts
         env:
