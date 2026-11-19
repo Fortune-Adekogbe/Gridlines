@@ -1,3 +1,5 @@
+import os
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,18 +19,13 @@ from selenium.common.exceptions import TimeoutException, WebDriverException
 # # creating driver
 # driver = webdriver.Chrome(options = chrome_options)
 
-def create_driver():
-    chrome_options = webdriver.ChromeOptions()    
-    # Adding options to run in headless mode (old) and disable notifications.
-    options = [
-    "--headless",
-    "--disable-notifications"
-    ]
+def create_driver(*, service=None):
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-notifications")
 
-    for option in options:
-        chrome_options.add_argument(option)
+    chrome_binary = os.environ.get("CHROME_BIN")
+    if chrome_binary:
+        chrome_options.binary_location = chrome_binary
 
-    # creating driver
-    driver = webdriver.Chrome(options = chrome_options)
-    # driver.set_page_load_timeout(60)
-    return driver
+    return webdriver.Chrome(options=chrome_options, service=service)
